@@ -1,0 +1,42 @@
+# ─── Python ──────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# ─── Environment ─────────────────────────────────────
+.env
+.venv/
+venv/
+env/
+
+# ─── Data files (tracked by DVC, not git) ────────────
+data/raw/train.csv
+data/raw/later.csv
+
+# ─── MLflow artifacts (db IS committed, not mlruns/) ─
+mlruns/
+mlartifacts/
+
+# ─── Models (model.joblib IS committed) ──────────────
+
+# ─── IDE / OS ─────────────────────────────────────────
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ─── Jupyter ─────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb
+
+# ─── Testing ─────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
