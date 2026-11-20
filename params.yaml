@@ -1,0 +1,30 @@
+# MP243 — Power Loom Output
+# Settings read by src/ code with yaml.safe_load
+
+paths:
+  train_raw:    "data/raw/train.csv"
+  later_raw:    "data/raw/later.csv"
+  holdout:      "data/raw/holdout_features.csv"
+  train_clean:  "data/processed/train_clean.csv"
+  model:        "models/model.joblib"
+  predictions:  "predictions/holdout_predictions.csv"
+  mlflow_db:    "sqlite:///mlflow.db"
+
+data:
+  target_col:        "metres_per_shift"
+  group_col:         "shed"
+  leaking_col:       "metres_checked_at_folding"
+  stuck_sensor_col:  "thread_count"
+  stuck_sensor_val:  147
+  stuck_start:       "2026-03-14"
+  stuck_end:         "2026-03-28"
+  typo_threshold:    200       # metres_per_shift above this is a 10x typo
+  psi_bins:          10
+
+model:
+  experiment_name:  "powerloom-v1"
+  registered_name:  "powerloom-regressor"
+  random_state:     42
+  test_size:        0.2
+  later_split:      0.70      # first 70% of later.csv for v2 retraining
+  promote_threshold: 0.10     # promote v2 if MAE drops by >= 10%
