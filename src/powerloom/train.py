@@ -165,6 +165,7 @@ for model_name, estimator in models.items():
         mlflow.sklearn.log_model(
             pipeline,
             artifact_path="model",
+            serialization_format="cloudpickle",
         )
 
         results.append({
@@ -215,6 +216,28 @@ joblib.dump(best_model, model_path)
 print("\nModel exported:", model_path)
 print("Registered version:", registered_model.version)
 print("MLflow alias: @champion")
+
+
+# 12. Update findings.yaml tracking section
+
+findings_path = ROOT / "reports/findings.yaml"
+if findings_path.exists():
+    with open(findings_path, "r") as f:
+        findings_data = yaml.safe_load(f)
+
+    if findings_data is None:
+        findings_data = {}
+
+    findings_data["tracking"] = {
+        "experiment_name": experiment_name,
+        "best_run_id": best_run_id,
+        "registered_model_name": registered_name,
+        "champion_version": int(registered_model.version),
+    }
+
+    with open(findings_path, "w") as f:
+        yaml.safe_dump(findings_data, f, sort_keys=False)
+    print("Updated reports/findings.yaml tracking section.")
 
 
 # 12. Display results
