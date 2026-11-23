@@ -18,7 +18,7 @@ data:
   stuck_sensor_val:  147
   stuck_start:       "2026-03-14"
   stuck_end:         "2026-03-28"
-  typo_threshold:    200       # metres_per_shift above this is a 10x typo
+  typo_threshold:    325       # metres_per_shift above this is a 10x typo
   psi_bins:          10
 
 model:
