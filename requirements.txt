@@ -6,6 +6,8 @@ scipy==1.13.1
 
 # MLflow experiment tracking
 mlflow==2.14.3
+SQLAlchemy==2.0.32
+alembic==1.13.2
 
 # Data versioning
 dvc==3.51.2
