@@ -1,21 +1,38 @@
 """FastAPI prediction service for G018 MP243 Power Loom Output.
 
 Author: Pranjal (Service Lead) — S24CSEU1027
+Structured JSON logging: Eshaan Mishra (Ops Lead) — S24CSEU0795
 """
 
 from __future__ import annotations
 
 from contextlib import asynccontextmanager
+import logging
 from pathlib import Path
+import sys
 from typing import Any
 
 import joblib
 import pandas as pd
+try:
+    from pythonjsonlogger.json import JsonFormatter
+except ImportError:
+    from pythonjsonlogger.jsonlogger import JsonFormatter
 import yaml
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
 ROOT = Path(__file__).resolve().parents[1]
+
+logger = logging.getLogger("powerloom.api")
+logger.setLevel(logging.INFO)
+logger.propagate = False
+if not logger.handlers:
+    _stdout_handler = logging.StreamHandler(sys.stdout)
+    _stdout_handler.setFormatter(
+        JsonFormatter("%(asctime)s %(levelname)s %(name)s %(message)s")
+    )
+    logger.addHandler(_stdout_handler)
 
 
 def _load_model_path() -> Path:
@@ -105,8 +122,19 @@ def predict(request: LoomPredictionRequest) -> LoomPredictionResponse:
     try:
         pred_value = float(loaded_model.predict(input_df)[0])
     except Exception as exc:
+        logger.error("Model inference failed", extra={"error": str(exc)})
         raise HTTPException(
             status_code=500, detail=f"Model inference failed: {exc}"
         ) from exc
 
-    return LoomPredictionResponse(prediction=round(pred_value, 4))
+    prediction = round(pred_value, 4)
+    logger.info(
+        "Prediction generated",
+        extra={
+            "prediction": prediction,
+            "fabric": payload["fabric"],
+            "shed": payload["shed"],
+            "shift_hours": payload["shift_hours"],
+        },
+    )
+    return LoomPredictionResponse(prediction=prediction)
