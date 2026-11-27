@@ -156,13 +156,19 @@ Powerloom-Output/
 │       ├── __init__.py                  # Package entry point
 │       ├── data_checks.py               # Empirical checks for all 7 data issues
 │       ├── eda.py                       # Exploratory Data Analysis & statistical summaries
+│       ├── data.py                      # Reusable data cleaning helpers
 │       ├── clean.py                     # Production data cleaning pipeline
-│       └── train.py                     # MLflow experiment tracking & model training
+│       ├── train.py                     # MLflow experiment tracking & v1 training
+│       ├── drift.py                     # 10-bin PSI drift & slice MAE monitoring (Stage 4)
+│       ├── retrain.py                   # v2 retraining & 10% promotion gate (Stage 4)
+│       └── predict.py                   # Champion holdout batch inference (Stage 4)
+├── conftest.py                          # Pytest path setup for src/
 ├── tests/
 │   ├── test_clean.py                    # Unit tests for data cleaning logic
-│   └── test_model.py                    # Unit tests for model inference & contracts
+│   ├── test_model.py                    # Unit tests for model inference & contracts
+│   └── test_api.py                      # FastAPI TestClient & rule validation tests
 ├── models/
-│   └── model.joblib                     # Serialized champion model artifact
+│   └── model.joblib                     # Serialized @champion model artifact (v2)
 ├── mlflow.db                            # SQLite MLflow tracking database (committed)
 ├── app/
 │   └── main.py                          # FastAPI service with Pydantic validation (Stage 3)
@@ -233,12 +239,30 @@ python3 src/powerloom/train.py
 mlflow ui --backend-store-uri sqlite:///mlflow.db
 ```
 
-### 5. Running Automated Unit Tests
+### 5. Running Automated Unit & API Tests
 Run the test suite with `pytest`:
 
 ```bash
-PYTHONPATH=src pytest -v tests/
+pytest -v tests/
 ```
+
+### 6. Serving the FastAPI Prediction API (Stage 3)
+```bash
+uvicorn app.main:app --host 0.0.0.0 --port 8000
+```
+
+### 7. Monitoring, Retraining & Holdout Inference (Stage 4)
+```bash
+PYTHONPATH=src python3 -m powerloom.drift
+PYTHONPATH=src python3 -m powerloom.retrain
+PYTHONPATH=src python3 -m powerloom.predict
+```
+
+### Observed Stage 4 Monitoring & Promotion Results
+- **Most Drifted Feature (10-bin PSI):** `shift_hours` (`5.3874`)
+- **Worst-Served Group (v1 MAE on `later.csv`):** `Shed 3` (`25.3032` vs `5.6813` in `Shed 1`, `4.4651` in `Shed 2`)
+- **Last 30% Chronological Evaluation:** `v1 MAE = 9.2986` → `v2 MAE = 5.0066` (**46.16% improvement**, `decision: promote`, `champion_version: 2`)
+- **Holdout Predictions:** 250 records written to `predictions/holdout_predictions.csv` (`record_id,prediction`)
 
 ---
 
