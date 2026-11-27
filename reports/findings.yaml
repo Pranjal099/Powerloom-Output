@@ -33,7 +33,7 @@ tracking:
   experiment_name: powerloom-v1
   best_run_id: f4eefdcc451b47a98c2ef8d21f3f517c
   registered_model_name: powerloom-regressor
-  champion_version: 1
+  champion_version: 2
 monitoring:
   psi:
     loom_age_yr: 0.0333
@@ -48,6 +48,6 @@ monitoring:
     Shed 2: 4.4651
     Shed 3: 25.3032
   worst_served_group: Shed 3
-  mae_v1_on_check: null
-  mae_v2_on_check: null
-  decision: null
+  mae_v1_on_check: 9.2986
+  mae_v2_on_check: 5.0066
+  decision: promote
