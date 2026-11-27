@@ -30,24 +30,24 @@ data_issues:
     column: null
     true_levels: null
 tracking:
-  experiment_name: "powerloom-v1"
-  best_run_id: "f4eefdcc451b47a98c2ef8d21f3f517c"
-  registered_model_name: "powerloom-regressor"
+  experiment_name: powerloom-v1
+  best_run_id: f4eefdcc451b47a98c2ef8d21f3f517c
+  registered_model_name: powerloom-regressor
   champion_version: 1
 monitoring:
   psi:
-    loom_age_yr: null
-    thread_count: null
-    power_cuts_min: null
-    weaver_exp_yr: null
-    humidity_pct: null
-    shift_hours: null
-  most_drifted_feature: null
+    loom_age_yr: 0.0333
+    thread_count: 0.1909
+    power_cuts_min: 0.0352
+    weaver_exp_yr: 0.0438
+    humidity_pct: 0.0241
+    shift_hours: 5.3874
+  most_drifted_feature: shift_hours
   mae_by_group:
-    Shed 1: null
-    Shed 2: null
-    Shed 3: null
-  worst_served_group: null
+    Shed 1: 5.6813
+    Shed 2: 4.4651
+    Shed 3: 25.3032
+  worst_served_group: Shed 3
   mae_v1_on_check: null
   mae_v2_on_check: null
   decision: null
